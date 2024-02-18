@@ -264,58 +264,34 @@ public class PasswordManager implements ActionListener {
 			
 			//searching passwords
 			
-			searchButton=new JButton("SEARCH PASSWORD");
-			GUIButtonsSetting(searchButton);
-			searchButton.setBounds(160, 380, 220, 70);
-			con1.add(searchButton);
-			searchButton.addActionListener(e->
-			{
-				if (searchButton==e.getSource()) {
-					 String url = "jdbc:mysql://localhost:3306/swing_pm";
-					 String username = "root";
-					 String pass = "123456";
-					 
-					 String query = "SELECT password FROM passwordstorage WHERE accountName = ?";
-					try(Connection connection = DriverManager.getConnection(url, username, pass);
-							PreparedStatement statement = connection.prepareStatement(query)) {
-						String acc_name = JOptionPane.showInputDialog("Enter your Account Name");
-						
-						if (!acc_name.isBlank()) {
-							statement.setString(1,acc_name);
-							ResultSet resultset=statement.executeQuery();
-							if (resultset.next()) {
-								 String password = resultset.getString("password");
-								 searchPassArea=new JTextArea(4,5);
-								 textArea(String.valueOf(password),searchPassArea);
-								 JOptionPane.showMessageDialog(con1, new JScrollPane(searchPassArea), "Copy your password", JOptionPane.INFORMATION_MESSAGE);
-								
-							}
-							else
-							{
-								JOptionPane.showMessageDialog(con1, "Account not Found!");
-							}
-							
-						}
-						
-						
-						else
-						{
-							 
-							JOptionPane.showMessageDialog(con1, "please enter account name");
-						}
-						
-						
-						
-						
-						
-					} catch (SQLException e2) {
-						// TODO: handle exception
-						JOptionPane.showMessageDialog(con1,e2.getMessage(),"EXIT",JOptionPane.ERROR_MESSAGE);
-					}
-					
-				}
+			searchButton.addActionListener(e -> {
+			    if (searchButton == e.getSource()) {
+			        String url = "jdbc:mysql://localhost:3306/swing_pm";
+			        String username = "root";
+			        String pass = "123456";
+			        String query = "SELECT password FROM passwordstorage WHERE accountName = ?";
+			        try (Connection connection = DriverManager.getConnection(url, username, pass);
+			             PreparedStatement statement = connection.prepareStatement(query)) {
+			            String acc_name = JOptionPane.showInputDialog("Enter your Account Name");
+			            if (acc_name != null && !acc_name.isBlank()) { // Check for null before invoking isBlank()
+			                statement.setString(1, acc_name);
+			                ResultSet resultSet = statement.executeQuery();
+			                if (resultSet.next()) {
+			                    String password = resultSet.getString("password");
+			                    searchPassArea = new JTextArea(4, 5);
+			                    textArea(String.valueOf(password), searchPassArea);
+			                    JOptionPane.showMessageDialog(con1, new JScrollPane(searchPassArea), "Copy your password", JOptionPane.INFORMATION_MESSAGE);
+			                } else {
+			                    JOptionPane.showMessageDialog(con1, "Account not Found!");
+			                }
+			            } else {
+			                JOptionPane.showMessageDialog(con1, "Please enter account name");
+			            }
+			        } catch (NullPointerException | SQLException e2) {
+			            JOptionPane.showMessageDialog(con1, e2.getMessage(), "EXIT", JOptionPane.ERROR_MESSAGE);
+			        }
+			    }
 			});
-			
 			//Delete password by AccountName
 			
 			deleteButton=new JButton("DELETE PASSWORD");
