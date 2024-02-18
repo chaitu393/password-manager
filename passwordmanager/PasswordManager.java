@@ -298,46 +298,33 @@ public class PasswordManager implements ActionListener {
 			GUIButtonsSetting(deleteButton);
 			deleteButton.setBounds(160, 480, 220, 70);
 			con1.add(deleteButton);
-			deleteButton.addActionListener(e->
-			{
-				if (deleteButton==e.getSource()) {
-					 String url = "jdbc:mysql://localhost:3306/swing_pm";
-					 String username = "root";
-					 String pass = "123456";
-					  String query = "DELETE FROM passwordstorage WHERE accountName = ?";
-					try( Connection connection = DriverManager.getConnection(url, username, pass);
-				             PreparedStatement statement = connection.prepareStatement(query)){
-						String acc_name=JOptionPane.showInputDialog("Enter the Account Name");
-						if (!acc_name.isBlank()) {
-							 statement.setString(1, acc_name);
-							 int rowsDeleted = statement.executeUpdate();
-							 if (rowsDeleted>0) {
-								 JOptionPane.showMessageDialog(con1, "Delete successfully!");
-								
-							 }
-							 else
-							 {
-								 JOptionPane.showMessageDialog(con1,"Account not Found!");
-							 }
-							
-						}
-						else
-						{
-							 
-							JOptionPane.showMessageDialog(con1, "please enter account name");
-						}
-					} catch (SQLException e3) {
-						e3.printStackTrace();
-						 JOptionPane.showMessageDialog(con1, e3.getMessage(), "EXIT", JOptionPane.ERROR_MESSAGE);
-						
-						
-					}
-					
-				}
+			deleteButton.addActionListener(e -> {
+			    if (deleteButton == e.getSource()) {
+			        String url = "jdbc:mysql://localhost:3306/swing_pm";
+			        String username = "root";
+			        String pass = "123456";
+			        String query = "DELETE FROM passwordstorage WHERE accountName = ?";
+			        try (Connection connection = DriverManager.getConnection(url, username, pass);
+			             PreparedStatement statement = connection.prepareStatement(query)) {
+			            String acc_name = JOptionPane.showInputDialog("Enter the Account Name");
+			            if (acc_name != null && !acc_name.isBlank()) { // Check for null before using acc_name
+			                statement.setString(1, acc_name);
+			                int rowsDeleted = statement.executeUpdate();
+			                if (rowsDeleted > 0) {
+			                    JOptionPane.showMessageDialog(con1, "Delete successfully!");
+			                } else {
+			                    JOptionPane.showMessageDialog(con1, "Account not Found!");
+			                }
+			            } else {
+			                JOptionPane.showMessageDialog(con1, "Please enter account name");
+			            }
+			        } catch (NullPointerException | SQLException e3) {
+			            JOptionPane.showMessageDialog(con1, e3.getMessage(), "EXIT", JOptionPane.ERROR_MESSAGE);
+			        }
+			    }
 			});
+
 			
-			
-	  		
 	  			
 	  		
 	  		
